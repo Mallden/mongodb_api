@@ -1,0 +1,36 @@
+version: '3'
+
+services:
+  api_db:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: uvicorn app.main:app --host 0.0.0.0 --port 80
+    restart: always
+    volumes:
+      - "./app:/app"
+    ports:
+      - "80:80"
+    depends_on:
+      - mongo
+    env_file:
+      - docker.env
+
+  mongo:
+    image: mongo
+    hostname: mongo
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    ports:
+      - "27017:27017"
+
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example

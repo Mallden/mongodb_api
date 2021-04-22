@@ -1,0 +1,13 @@
+Click
+fastapi
+h11
+httptools
+pydantic
+SQLAlchemy
+starlette
+typing
+uvicorn
+uvloop
+websockets
+pymongo
+mongoengine
