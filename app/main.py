@@ -22,7 +22,7 @@ async def get_items(filter_items: str, response: Response):
         return {'error': 'empty query params'}
     connect(host=settings.uri)
     sort_products = list()
-    sort_filter = filter_items.pop('sort') if 'sort' in filter_items else None
+    sort_filter = filter_items.pop('sort') if 'sort' in filter_items else {}
     paid_companies = Companies.objects(paid=True) if sort_filter.get('paid_companies') else None
     paid_products = None
     try:
@@ -44,5 +44,4 @@ async def get_items(filter_items: str, response: Response):
     else:
         products = Products.objects().filter(**filter_search).order_by(*sort_products)
     disconnect()
-    return products.to_json()
-
+    return json.loads(products.to_json())
