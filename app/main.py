@@ -1,5 +1,5 @@
 import json
-from fastapi import FastAPI, Query, Depends
+from fastapi import FastAPI, Query, Depends, Response, status
 
 from mongoengine import connect, disconnect
 
@@ -15,9 +15,10 @@ def read_root():
 
 
 @app.get("/search")
-async def get_items(filter_items: str):
+async def get_items(filter_items: str, response: Response):
     filter_items = json.loads(filter_items)
     if not filter_items:
+        response.status_code = status.HTTP_400_BAD_REQUEST
         return {'error': 'empty query params'}
     connect(host=settings.uri)
     sort_products = list()
