@@ -1,5 +1,4 @@
 import json
-from typing import Dict
 from fastapi import FastAPI, Query, Depends
 
 from mongoengine import connect, disconnect
@@ -16,7 +15,10 @@ def read_root():
 
 
 @app.get("/search")
-async def get_items(filter_items: dict):
+async def get_items(filter_items: str):
+    filter_items = json.loads(filter_items)
+    if not filter_items:
+        return {'error': 'empty query params'}
     connect(host=settings.uri)
     sort_products = list()
     sort_filter = filter_items.pop('sort') if 'sort' in filter_items else None
@@ -42,5 +44,4 @@ async def get_items(filter_items: dict):
         products = Products.objects().filter(**filter_search).order_by(*sort_products)
     disconnect()
     return products.to_json()
-
 
